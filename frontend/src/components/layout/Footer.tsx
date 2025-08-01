@@ -55,16 +55,16 @@ const Footer = () => {
   const quickLinks = getQuickLinks();
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-indigo-800 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">EP</span>
+                <span className="text-white font-bold text-sm">EH</span>
               </div>
-              <span className="text-xl font-bold">Engineer Panel</span>
+              <span className="text-xl font-bold">EngineerHub</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
               Streamlining engineer management and project assignments for better productivity and team collaboration.

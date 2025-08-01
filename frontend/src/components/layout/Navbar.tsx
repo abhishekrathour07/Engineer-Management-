@@ -38,16 +38,16 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-gray-900 backdrop-blur-sm border-b border-white sticky top-0 z-50">
+    <nav className="bg-indigo-800 backdrop-blur-sm border-b border-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
             <Link to="/dashboard" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">EP</span>
+                <span className="text-white font-bold text-sm">EH</span>
               </div>
-              <span className="text-xl font-bold text-white">Engineer Panel</span>
+              <span className="text-xl font-bold text-white">EngineerHub</span>
             </Link>
           </div>
 

@@ -10,7 +10,17 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
 import { Badge } from '../../ui/badge';
 import { toast } from 'sonner';
-import { Plus, Edit, Trash2, Users, Calendar, Percent } from 'lucide-react';
+import { 
+  Plus, 
+  Edit, 
+  Trash2, 
+  Users, 
+  Calendar, 
+  Percent, 
+  Search,
+  Target,
+  RefreshCw
+} from 'lucide-react';
 import { assignmentService, engineerService, projectService, authService } from '../../services';
 import type { Assignment, Engineer, Project } from '../../services';
 import { useModal } from '../../context/modal-context';
@@ -41,9 +51,10 @@ const Assignments = () => {
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
-  const { openSheet } = useModal()
+  const { openSheet } = useModal();
 
   // Check if user is manager
   useEffect(() => {
@@ -126,6 +137,31 @@ const Assignments = () => {
     }
   };
 
+  const handleRefresh = async () => {
+    try {
+      setInitialLoading(true);
+      const [engineersResponse, projectsResponse, assignmentsResponse] = await Promise.all([
+        engineerService.getEngineers(),
+        projectService.getProjects(),
+        assignmentService.getAssignments()
+      ]);
+
+      setEngineers(engineersResponse.engineers);
+      setProjects(projectsResponse.projects);
+      setAssignments(assignmentsResponse.assignments);
+      toast.success('Assignments refreshed successfully');
+    } catch (error: any) {
+      toast.error('Failed to refresh data');
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+
+  const filteredAssignments = assignments.filter(assignment =>
+    assignment.engineer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    assignment.project?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    assignment.role.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const totalAssignments = assignments.length;
   const activeAssignments = assignments.filter(a => a.project?.name).length;
@@ -135,9 +171,9 @@ const Assignments = () => {
 
   if (initialLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex justify-center items-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading assignments...</p>
         </div>
       </div>
@@ -145,73 +181,95 @@ const Assignments = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Project Assignments</h1>
-          <p className="text-gray-600">Manage engineer assignments to projects</p>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Project Assignments</h1>
+              <p className="text-gray-600 text-lg">Manage engineer assignments to projects</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handleRefresh}
+                className="border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Refresh
+              </Button>
+              <Button 
+                onClick={() => setShowForm(!showForm)} 
+                className="bg-indigo-700 hover:bg-indigo-800 text-white border-0 shadow-lg"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                {showForm ? 'Cancel' : 'New Assignment'}
+              </Button>
+            </div>
+          </div>
+          
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Input
+              placeholder="Search assignments..."
+              className="pl-10 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-white shadow-sm border-0">
+          <Card className="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white border-0 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Assignments</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalAssignments}</p>
+                  <p className="text-indigo-100 text-sm font-medium">Total Assignments</p>
+                  <p className="text-3xl font-bold">{totalAssignments}</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Users className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-indigo-400/30 rounded-full flex items-center justify-center">
+                  <Users className="w-6 h-6" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-sm border-0">
+          <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white border-0 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active Assignments</p>
-                  <p className="text-2xl font-bold text-gray-900">{activeAssignments}</p>
+                  <p className="text-emerald-100 text-sm font-medium">Active Assignments</p>
+                  <p className="text-3xl font-bold">{activeAssignments}</p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-emerald-400/30 rounded-full flex items-center justify-center">
+                  <Calendar className="w-6 h-6" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-sm border-0">
+          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Avg Allocation</p>
-                  <p className="text-2xl font-bold text-gray-900">{avgAllocation}%</p>
+                  <p className="text-blue-100 text-sm font-medium">Avg Allocation</p>
+                  <p className="text-3xl font-bold">{avgAllocation}%</p>
                 </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <Percent className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-blue-400/30 rounded-full flex items-center justify-center">
+                  <Percent className="w-6 h-6" />
                 </div>
               </div>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Create Assignment Button */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Assignments</h2>
-          <Button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            {showForm ? 'Cancel' : 'New Assignment'}
-          </Button>
         </div>
 
         {/* Assignment Form */}
         {showForm && (
-          <Card className="mb-8 bg-white shadow-sm border-0">
-            <CardHeader>
-              <h3 className="text-lg font-semibold text-gray-900">Create New Assignment</h3>
+          <Card className="mb-8 bg-white border border-gray-200 shadow-lg">
+            <CardHeader className="pb-4">
+              <h3 className="text-xl font-bold text-gray-900">Create New Assignment</h3>
             </CardHeader>
             <CardContent>
               <Form {...form}>
@@ -222,10 +280,10 @@ const Assignments = () => {
                       name="engineerId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Engineer *</FormLabel>
+                          <FormLabel className="text-gray-700 font-medium">Engineer *</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger className="border-gray-300 w-full focus:border-indigo-500 focus:ring-indigo-500">
                                 <SelectValue placeholder="Select engineer" />
                               </SelectTrigger>
                             </FormControl>
@@ -247,10 +305,10 @@ const Assignments = () => {
                       name="projectId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Project *</FormLabel>
+                          <FormLabel className="text-gray-700 font-medium">Project *</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger className="border-gray-300 w-full focus:border-indigo-500 focus:ring-indigo-500">
                                 <SelectValue placeholder="Select project" />
                               </SelectTrigger>
                             </FormControl>
@@ -274,13 +332,14 @@ const Assignments = () => {
                       name="allocationPercentage"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Allocation % *</FormLabel>
+                          <FormLabel className="text-gray-700 font-medium">Allocation % *</FormLabel>
                           <FormControl>
                             <Input
                               type="number"
                               min="1"
                               max="100"
                               placeholder="100"
+                              className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                               {...field}
                               onChange={(e) => field.onChange(parseInt(e.target.value))}
                             />
@@ -295,9 +354,13 @@ const Assignments = () => {
                       name="startDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Start Date *</FormLabel>
+                          <FormLabel className="text-gray-700 font-medium">Start Date *</FormLabel>
                           <FormControl>
-                            <Input type="date" {...field} />
+                            <Input 
+                              type="date" 
+                              className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -309,9 +372,14 @@ const Assignments = () => {
                       name="endDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>End Date</FormLabel>
+                          <FormLabel className="text-gray-700 font-medium">End Date</FormLabel>
                           <FormControl>
-                            <Input type="date" {...field} value={field.value || ''} />
+                            <Input 
+                              type="date" 
+                              className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                              {...field} 
+                              value={field.value || ''} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -324,24 +392,32 @@ const Assignments = () => {
                     name="role"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Role *</FormLabel>
+                        <FormLabel className="text-gray-700 font-medium">Role *</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g., Lead Developer, Frontend Developer" {...field} />
+                          <Input 
+                            placeholder="e.g., Lead Developer, Frontend Developer" 
+                            className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                            {...field} 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  <div className="flex gap-4 pt-4 border-t">
-                    <Button type="submit" disabled={loading} className="flex-1 cursor-pointer">
+                  <div className="flex gap-4 pt-4 border-t border-gray-200">
+                    <Button 
+                      type="submit" 
+                      disabled={loading} 
+                      className="flex-1 bg-indigo-700 hover:bg-indigo-800 text-white border-0"
+                    >
                       {loading ? 'Creating...' : 'Create Assignment'}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setShowForm(false)}
-                      className="flex-1 cursor-pointer"
+                      className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
                     >
                       Cancel
                     </Button>
@@ -354,53 +430,58 @@ const Assignments = () => {
 
         {/* Assignments Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {assignments.map((assignment) => (
-            <Card key={assignment.id} className="bg-white shadow-sm border-0 hover:shadow-md transition-shadow">
+          {filteredAssignments.map((assignment) => (
+            <Card 
+              key={assignment.id} 
+              className="bg-white border border-gray-200 hover:border-indigo-300 hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              onClick={() => navigate(`/assignments/${assignment.id}`)}
+            >
               <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 mb-1">{assignment.engineer?.name || 'Unknown Engineer'}</h3>
-                    <p className="text-sm text-gray-600 mb-2">{assignment.project?.name || 'Unknown Project'}</p>
-                    <div className="flex gap-2 mb-2">
-                      <Badge className="bg-blue-100 text-blue-800">
-                        {assignment.role}
-                      </Badge>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                      {assignment.engineer?.name?.charAt(0).toUpperCase() || 'A'}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">
+                        {assignment.engineer?.name || 'Unknown Engineer'}
+                      </h3>
+                      <p className="text-sm text-gray-600">{assignment.project?.name || 'Unknown Project'}</p>
                     </div>
                   </div>
+                  <Badge className="bg-indigo-700 text-white border-0">
+                    {assignment.role}
+                  </Badge>
                 </div>
 
                 <div className="space-y-3 mb-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Role:</span>
-                    <span className="font-medium">{assignment.role}</span>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Percent className="w-4 h-4 text-indigo-600" />
+                    <span>Allocation: <span className="font-medium text-indigo-700">{assignment.allocationPercentage}%</span></span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Allocation:</span>
-                    <span className="font-medium">{assignment.allocationPercentage}%</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Start:</span>
-                    <span className="font-medium">{new Date(assignment.startDate).toLocaleDateString()}</span>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Calendar className="w-4 h-4 text-indigo-600" />
+                    <span>Start: <span className="font-medium">{new Date(assignment.startDate).toLocaleDateString()}</span></span>
                   </div>
                   {assignment.endDate && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">End:</span>
-                      <span className="font-medium">{new Date(assignment.endDate).toLocaleDateString()}</span>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Target className="w-4 h-4 text-indigo-600" />
+                      <span>End: <span className="font-medium">{new Date(assignment.endDate).toLocaleDateString()}</span></span>
                     </div>
                   )}
                 </div>
 
                 {assignment.engineer?.skills && assignment.engineer.skills.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-2">Engineer Skills:</p>
+                    <p className="text-sm font-medium text-gray-700 mb-2">Engineer Skills:</p>
                     <div className="flex flex-wrap gap-1">
                       {assignment.engineer.skills.slice(0, 3).map((skill, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
+                        <Badge key={index} variant="outline" className="text-xs bg-indigo-50 border-indigo-200 text-indigo-700">
                           {skill}
                         </Badge>
                       ))}
                       {assignment.engineer.skills.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs border-indigo-300 text-indigo-700">
                           +{assignment.engineer.skills.length - 3} more
                         </Badge>
                       )}
@@ -412,26 +493,32 @@ const Assignments = () => {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="flex-1 cursor-pointer"
-                    onClick={() => openSheet(
-                      <EditForm
-                        assignment={assignment}
-                        onUpdate={(updatedAssignment) => {
-                          setAssignments(assignments.map(a => 
-                            a.id === updatedAssignment.id ? updatedAssignment : a
-                          ));
-                        }}
-                      />
-                    )}
+                    className="flex-1 border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openSheet(
+                        <EditForm
+                          assignment={assignment}
+                          onUpdate={(updatedAssignment) => {
+                            setAssignments(assignments.map(a => 
+                              a.id === updatedAssignment.id ? updatedAssignment : a
+                            ));
+                          }}
+                        />
+                      );
+                    }}
                   >
-                    <Edit className="w-4 h-4 mr-1 " />
+                    <Edit className="w-4 h-4 mr-1" />
                     Edit
                   </Button>
                   <Button
                     size="sm"
-                    variant="destructive"
-                    onClick={() => deleteAssignment(assignment.id)}
-                    className="flex-1 cursor-pointer"
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteAssignment(assignment.id);
+                    }}
+                    className="flex-1 border-red-300 text-red-700 hover:bg-red-50"
                   >
                     <Trash2 className="w-4 h-4 mr-1" />
                     Delete
@@ -442,17 +529,24 @@ const Assignments = () => {
           ))}
         </div>
 
-        {assignments.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users className="w-8 h-8 text-gray-400" />
+        {filteredAssignments.length === 0 && (
+          <div className="text-center py-16">
+            <div className="w-24 h-24 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Users className="w-12 h-12 text-indigo-600" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No assignments found</h3>
-            <p className="text-gray-500 mb-4">Create your first assignment to get started.</p>
-            <Button onClick={() => setShowForm(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Create Assignment
-            </Button>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No assignments found</h3>
+            <p className="text-gray-600 mb-6">
+              {searchTerm ? 'Try adjusting your search criteria.' : 'Create your first assignment to get started.'}
+            </p>
+            {!searchTerm && (
+              <Button 
+                onClick={() => setShowForm(true)}
+                className="bg-indigo-700 hover:bg-indigo-800 text-white border-0"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Assignment
+              </Button>
+            )}
           </div>
         )}
       </div>

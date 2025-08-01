@@ -105,7 +105,7 @@ const EngineerDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your dashboard...</p>
@@ -115,7 +115,7 @@ const EngineerDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -127,12 +127,12 @@ const EngineerDashboard = () => {
 
         {/* Engineer Profile Card */}
         {engineerData && (
-          <Card className="bg-white shadow-sm border-0 mb-8">
+          <Card className="bg-gradient-to-r from-white to-gray-50 shadow-xl border-0 mb-8 hover:shadow-2xl transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-                    <span className="text-xl font-bold text-red-600">
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center shadow-lg">
+                    <span className="text-xl font-bold text-white">
                       {engineerData.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
@@ -153,7 +153,7 @@ const EngineerDashboard = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <Badge className="bg-blue-100 text-blue-800 mb-2">
+                  <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white mb-2 border-0 shadow-md">
                     {engineerData.seniority || 'Engineer'}
                   </Badge>
                   <p className="text-sm text-gray-600">Available Capacity</p>
@@ -166,57 +166,57 @@ const EngineerDashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-white shadow-sm border-0">
+          <Card className="bg-gradient-to-br from-white to-blue-50 shadow-xl border-0 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Allocation</p>
                   <p className="text-2xl font-bold text-gray-900">{totalAllocation}%</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Target className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                  <Target className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-sm border-0">
+          <Card className="bg-gradient-to-br from-white to-green-50 shadow-xl border-0 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Active Projects</p>
                   <p className="text-2xl font-bold text-gray-900">{activeProjects}</p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                  <TrendingUp className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-sm border-0">
+          <Card className="bg-gradient-to-br from-white to-purple-50 shadow-xl border-0 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Avg Progress</p>
                   <p className="text-2xl font-bold text-gray-900">{avgProgress}%</p>
                 </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                  <Clock className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-sm border-0">
+          <Card className="bg-gradient-to-br from-white to-orange-50 shadow-xl border-0 hover:shadow-2xl transition-all duration-300 hover:scale-105">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Skills</p>
                   <p className="text-2xl font-bold text-gray-900">{totalSkills}</p>
                 </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                  <Award className="w-6 h-6 text-orange-600" />
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
+                  <Award className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>
@@ -231,7 +231,7 @@ const EngineerDashboard = () => {
               {assignments.map((assignment) => (
                 <Card 
                   key={assignment.id} 
-                  className="bg-white shadow-sm border-0 hover:shadow-md transition-shadow cursor-pointer"
+                  className="bg-gradient-to-br from-white to-gray-50 shadow-xl border-0 hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer"
                   onClick={() => navigate(`/assignments/${assignment.id}`)}
                 >
                   <CardContent className="p-6">
@@ -243,7 +243,7 @@ const EngineerDashboard = () => {
                         <p className="text-sm text-gray-600 mb-2">
                           {assignment.role}
                         </p>
-                        <Badge className="bg-blue-100 text-blue-800">
+                        <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-md">
                           {assignment.allocationPercentage}% allocated
                         </Badge>
                       </div>
@@ -278,10 +278,10 @@ const EngineerDashboard = () => {
               ))}
             </div>
           ) : (
-            <Card className="bg-white shadow-sm border-0">
+            <Card className="bg-gradient-to-br from-white to-gray-50 shadow-xl border-0">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Calendar className="w-8 h-8 text-gray-400" />
+                <div className="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Calendar className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No assignments found</h3>
                 <p className="text-gray-500">You don't have any active project assignments at the moment.</p>
@@ -296,7 +296,7 @@ const EngineerDashboard = () => {
              <h2 className="text-2xl font-bold text-gray-900 mb-6">Skills Overview</h2>
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                {engineerData.skills.map((skill, index) => (
-                 <Card key={index} className="bg-white shadow-sm border-0 hover:shadow-md transition-shadow">
+                 <Card key={index} className="bg-gradient-to-br from-white to-gray-50 shadow-xl border-0 hover:shadow-2xl transition-all duration-300 hover:scale-105">
                    <CardContent className="p-4">
                      <div className="flex items-center space-x-3">
                        <div className="flex-shrink-0">
@@ -305,7 +305,7 @@ const EngineerDashboard = () => {
                        <div className="flex-1">
                          <h3 className="font-semibold text-gray-900">{skill}</h3>
                        </div>
-                       <Badge className="bg-green-100 text-green-800">
+                       <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-md">
                          Active
                        </Badge>
                      </div>

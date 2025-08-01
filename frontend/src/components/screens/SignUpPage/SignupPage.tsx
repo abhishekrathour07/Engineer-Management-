@@ -46,7 +46,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-neutral-900 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-indigo-900 relative overflow-hidden">
       <BackgroundBeams />
       
       <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm rounded-none relative z-10">
@@ -146,7 +146,7 @@ const SignUpPage = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-black text-white py-2 hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
+                 className="w-full bg-indigo-700 text-white py-2 hover:bg-indigo-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
                 {loading ? 'Creating account...' : 'Create Account'}
               </Button>

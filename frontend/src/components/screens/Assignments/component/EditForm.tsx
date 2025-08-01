@@ -100,7 +100,7 @@ const EditForm: React.FC<EditFormProps> = ({ assignment, onUpdate }) => {
     return (
 
         <div className='h-full flex flex-col gap-6'>
-            <h1 className='text-center text-xl font-bold mt-6 '>Edit Assignment Detail</h1>
+            <h1 className='text-center text-xl font-bold mt-6 text-indigo-800'>Edit Assignment Detail</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="flex flex-col gap-6">
@@ -221,7 +221,7 @@ const EditForm: React.FC<EditFormProps> = ({ assignment, onUpdate }) => {
                     />
 
                     <div className="flex gap-4 pt-4 mt-12">
-                        <Button type="submit" disabled={loading} className="flex-1 cursor-pointer">
+                        <Button type="submit" disabled={loading} className="flex-1 bg-indigo-800 cursor-pointer">
                             {loading ? (
                                 <>
                                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
